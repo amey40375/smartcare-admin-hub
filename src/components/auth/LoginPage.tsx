@@ -1,167 +1,160 @@
 
-import React, { useState, useEffect } from 'react';
-import { adminAuth } from '../../utils/adminAuth';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Input } from '../ui/input';
 import { Button } from '../ui/button';
-import { Label } from '../ui/label';
-import { Shield, Mail, Lock } from 'lucide-react';
+import { adminAuth } from '../../utils/adminAuth';
+import { Eye, EyeOff, Shield, Sparkles, Lock, Mail } from 'lucide-react';
 
 interface LoginPageProps {
   onLogin: () => void;
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
-  const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    // Redirect jika sudah login
-    if (adminAuth.isLoggedIn()) {
-      onLogin();
-    }
-  }, [onLogin]);
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     setError('');
-    setIsLoading(true);
 
-    // Validasi input
-    if (!email || !password) {
-      setError('Email dan password wajib diisi');
-      setIsLoading(false);
-      return;
-    }
-
-    if (!isLogin && password !== confirmPassword) {
-      setError('Konfirmasi password tidak sesuai');
-      setIsLoading(false);
-      return;
-    }
-
-    if (isLogin) {
-      // Login
-      const success = adminAuth.login(email, password);
+    try {
+      const success = await adminAuth.login(email, password);
       if (success) {
         onLogin();
       } else {
         setError('Email atau password salah');
       }
-    } else {
-      // Register
-      const success = adminAuth.register(email, password);
-      if (success) {
-        setError('');
-        setIsLogin(true);
-        setEmail('');
-        setPassword('');
-        setConfirmPassword('');
-        alert('Admin berhasil didaftarkan! Silakan login.');
-      } else {
-        setError('Email sudah terdaftar');
-      }
+    } catch (error) {
+      setError('Terjadi kesalahan saat login');
+    } finally {
+      setLoading(false);
     }
-    setIsLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md shadow-xl border-0 bg-white/95 backdrop-blur">
-        <CardHeader className="text-center pb-8">
-          <div className="mx-auto w-16 h-16 bg-gradient-to-r from-blue-600 to-green-600 rounded-full flex items-center justify-center mb-4">
-            <Shield className="w-8 h-8 text-white" />
+    <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Professional Background Elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-cyan-50"></div>
+      <div className="absolute top-20 left-20 w-72 h-72 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-br from-teal-400/20 to-blue-400/20 rounded-full blur-3xl"></div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-indigo-400/10 to-cyan-400/10 rounded-full blur-3xl"></div>
+
+      {/* Professional Login Card */}
+      <Card className="w-full max-w-md glass-card border-0 shadow-2xl animate-fade-in relative z-10">
+        <CardHeader className="text-center pb-6">
+          {/* Professional Logo */}
+          <div className="mx-auto w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-600 flex items-center justify-center mb-6 shadow-xl">
+            <Shield className="w-10 h-10 text-white" />
           </div>
-          <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent">
-            SmartCare Admin
-          </CardTitle>
-          <p className="text-muted-foreground">
-            {isLogin ? 'Masuk ke Dashboard Admin' : 'Daftar Admin Baru'}
-          </p>
+          
+          <div className="space-y-2">
+            <CardTitle className="text-3xl font-bold gradient-text flex items-center justify-center gap-2">
+              SmartCare Admin
+              <Sparkles className="w-6 h-6 text-blue-500" />
+            </CardTitle>
+            <p className="text-muted-foreground font-medium">
+              Professional Dashboard System
+            </p>
+            <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full mx-auto"></div>
+          </div>
         </CardHeader>
-        
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+
+        <CardContent className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Professional Email Input */}
             <div className="space-y-2">
-              <Label htmlFor="email" className="flex items-center gap-2">
-                <Mail className="w-4 h-4" />
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="admin@smartcare.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="h-12"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="password" className="flex items-center gap-2">
-                <Lock className="w-4 h-4" />
-                Password
-              </Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Masukkan password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="h-12"
-              />
-            </div>
-            
-            {!isLogin && (
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword" className="flex items-center gap-2">
-                  <Lock className="w-4 h-4" />
-                  Konfirmasi Password
-                </Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  placeholder="Konfirmasi password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="h-12"
+              <label className="text-sm font-semibold text-foreground flex items-center gap-2">
+                <Mail className="w-4 h-4 text-blue-500" />
+                Email Address
+              </label>
+              <div className="relative">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border border-input bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 placeholder:text-muted-foreground"
+                  placeholder="admin@smartcare.com"
+                  required
                 />
               </div>
-            )}
-            
+            </div>
+
+            {/* Professional Password Input */}
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-foreground flex items-center gap-2">
+                <Lock className="w-4 h-4 text-blue-500" />
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 pr-12 rounded-xl border border-input bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 placeholder:text-muted-foreground"
+                  placeholder="••••••••••••"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors duration-300"
+                >
+                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Error Message */}
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
+              <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm animate-fade-in">
                 {error}
               </div>
             )}
-            
+
+            {/* Professional Login Button */}
             <Button
               type="submit"
-              className="w-full h-12 bg-gradient-to-r from-blue-600 to-green-600 hover:from-blue-700 hover:to-green-700"
-              disabled={isLoading}
+              disabled={loading}
+              className="w-full py-3 btn-gradient text-white font-semibold rounded-xl shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isLoading ? 'Loading...' : (isLogin ? 'Masuk' : 'Daftar')}
+              {loading ? (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Signing In...
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Shield className="w-4 h-4" />
+                  Sign In to Dashboard
+                </div>
+              )}
             </Button>
           </form>
-          
-          <div className="mt-6 text-center">
-            <button
-              type="button"
-              onClick={() => {
-                setIsLogin(!isLogin);
-                setError('');
-                setEmail('');
-                setPassword('');
-                setConfirmPassword('');
-              }}
-              className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-            >
-              {isLogin ? 'Belum punya akun? Daftar' : 'Sudah punya akun? Masuk'}
-            </button>
+
+          {/* Professional Demo Credentials */}
+          <div className="mt-6 p-4 rounded-xl bg-blue-50/80 border border-blue-200">
+            <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+              <Sparkles className="w-4 h-4" />
+              Demo Credentials
+            </h4>
+            <div className="space-y-1 text-sm text-blue-700">
+              <p><span className="font-medium">Email:</span> admin@smartcare.com</p>
+              <p><span className="font-medium">Password:</span> admin123</p>
+            </div>
+          </div>
+
+          {/* Professional Footer */}
+          <div className="text-center pt-4 border-t border-border/50">
+            <p className="text-xs text-muted-foreground">
+              SmartCare Admin Dashboard v2.0
+            </p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Secure • Professional • Reliable
+            </p>
           </div>
         </CardContent>
       </Card>
