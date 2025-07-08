@@ -53,8 +53,8 @@ const RatingMitra: React.FC<RatingMitraProps> = ({ onBack }) => {
     ));
   };
 
-  const getAverageRating = () => {
-    if (ratings.length === 0) return 0;
+  const getAverageRating = (): string => {
+    if (ratings.length === 0) return "0";
     const total = ratings.reduce((sum, r) => sum + r.nilai_rating, 0);
     return (total / ratings.length).toFixed(1);
   };
@@ -68,7 +68,7 @@ const RatingMitra: React.FC<RatingMitraProps> = ({ onBack }) => {
         </div>
       </div>
     );
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
