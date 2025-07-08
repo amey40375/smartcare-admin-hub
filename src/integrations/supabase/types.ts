@@ -14,7 +14,312 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      calon_mitra: {
+        Row: {
+          alamat: string | null
+          created_at: string
+          email: string
+          id: string
+          jenis_layanan: string | null
+          kk: string
+          ktp: string
+          nama: string
+          nomor_hp: string
+        }
+        Insert: {
+          alamat?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          jenis_layanan?: string | null
+          kk: string
+          ktp: string
+          nama: string
+          nomor_hp: string
+        }
+        Update: {
+          alamat?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          jenis_layanan?: string | null
+          kk?: string
+          ktp?: string
+          nama?: string
+          nomor_hp?: string
+        }
+        Relationships: []
+      }
+      komplain: {
+        Row: {
+          id: string
+          isi_komplain: string
+          mitra_id: string | null
+          pesanan_id: string | null
+          status: string | null
+          tanggal_komplain: string | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          isi_komplain: string
+          mitra_id?: string | null
+          pesanan_id?: string | null
+          status?: string | null
+          tanggal_komplain?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          isi_komplain?: string
+          mitra_id?: string | null
+          pesanan_id?: string | null
+          status?: string | null
+          tanggal_komplain?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "komplain_mitra_id_fkey"
+            columns: ["mitra_id"]
+            isOneToOne: false
+            referencedRelation: "mitras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "komplain_pesanan_id_fkey"
+            columns: ["pesanan_id"]
+            isOneToOne: false
+            referencedRelation: "pesanan"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "komplain_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      layanan: {
+        Row: {
+          aktif: boolean | null
+          created_at: string
+          deskripsi: string | null
+          id: string
+          kategori: string | null
+          nama_layanan: string
+          tarif: number
+        }
+        Insert: {
+          aktif?: boolean | null
+          created_at?: string
+          deskripsi?: string | null
+          id?: string
+          kategori?: string | null
+          nama_layanan: string
+          tarif: number
+        }
+        Update: {
+          aktif?: boolean | null
+          created_at?: string
+          deskripsi?: string | null
+          id?: string
+          kategori?: string | null
+          nama_layanan?: string
+          tarif?: number
+        }
+        Relationships: []
+      }
+      mitras: {
+        Row: {
+          alamat: string | null
+          blokir: boolean | null
+          created_at: string
+          email: string
+          id: string
+          jenis_layanan: string | null
+          kk: string
+          ktp: string
+          nama: string
+          nomor_hp: string
+          saldo: number | null
+          status: string | null
+        }
+        Insert: {
+          alamat?: string | null
+          blokir?: boolean | null
+          created_at?: string
+          email: string
+          id?: string
+          jenis_layanan?: string | null
+          kk: string
+          ktp: string
+          nama: string
+          nomor_hp: string
+          saldo?: number | null
+          status?: string | null
+        }
+        Update: {
+          alamat?: string | null
+          blokir?: boolean | null
+          created_at?: string
+          email?: string
+          id?: string
+          jenis_layanan?: string | null
+          kk?: string
+          ktp?: string
+          nama?: string
+          nomor_hp?: string
+          saldo?: number | null
+          status?: string | null
+        }
+        Relationships: []
+      }
+      pesanan: {
+        Row: {
+          alamat_pesanan: string | null
+          catatan: string | null
+          id: string
+          layanan_id: string | null
+          mitra_id: string | null
+          status: string | null
+          tanggal_pesanan: string | null
+          tanggal_selesai: string | null
+          total_bayar: number | null
+          user_id: string | null
+        }
+        Insert: {
+          alamat_pesanan?: string | null
+          catatan?: string | null
+          id?: string
+          layanan_id?: string | null
+          mitra_id?: string | null
+          status?: string | null
+          tanggal_pesanan?: string | null
+          tanggal_selesai?: string | null
+          total_bayar?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          alamat_pesanan?: string | null
+          catatan?: string | null
+          id?: string
+          layanan_id?: string | null
+          mitra_id?: string | null
+          status?: string | null
+          tanggal_pesanan?: string | null
+          tanggal_selesai?: string | null
+          total_bayar?: number | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pesanan_layanan_id_fkey"
+            columns: ["layanan_id"]
+            isOneToOne: false
+            referencedRelation: "layanan"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pesanan_mitra_id_fkey"
+            columns: ["mitra_id"]
+            isOneToOne: false
+            referencedRelation: "mitras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pesanan_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      rating: {
+        Row: {
+          id: string
+          komentar: string | null
+          mitra_id: string | null
+          nilai_rating: number | null
+          pesanan_id: string | null
+          tanggal_rating: string | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          komentar?: string | null
+          mitra_id?: string | null
+          nilai_rating?: number | null
+          pesanan_id?: string | null
+          tanggal_rating?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          komentar?: string | null
+          mitra_id?: string | null
+          nilai_rating?: number | null
+          pesanan_id?: string | null
+          tanggal_rating?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rating_mitra_id_fkey"
+            columns: ["mitra_id"]
+            isOneToOne: false
+            referencedRelation: "mitras"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rating_pesanan_id_fkey"
+            columns: ["pesanan_id"]
+            isOneToOne: false
+            referencedRelation: "pesanan"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "rating_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          alamat: string | null
+          created_at: string
+          email: string
+          id: string
+          nama: string
+          nomor_hp: string
+          saldo: number | null
+        }
+        Insert: {
+          alamat?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          nama: string
+          nomor_hp: string
+          saldo?: number | null
+        }
+        Update: {
+          alamat?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          nama?: string
+          nomor_hp?: string
+          saldo?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

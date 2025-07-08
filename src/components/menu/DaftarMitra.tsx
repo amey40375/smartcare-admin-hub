@@ -1,0 +1,149 @@
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
+import { supabaseFetch } from '../../utils/supabaseConfig';
+import { ArrowLeft, Users, Mail, Phone, DollarSign } from 'lucide-react';
+
+interface Mitra {
+  id: string;
+  nama: string;
+  email: string;
+  nomor_hp: string;
+  alamat: string;
+  jenis_layanan: string;
+  status: string;
+  saldo: number;
+  blokir: boolean;
+  created_at: string;
+}
+
+interface DaftarMitraProps {
+  onBack: () => void;
+}
+
+const DaftarMitra: React.FC<DaftarMitraProps> = ({ onBack }) => {
+  const [mitras, setMitras] = useState<Mitra[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchMitras();
+  }, []);
+
+  const fetchMitras = async () => {
+    try {
+      setLoading(true);
+      const data = await supabaseFetch('mitras?select=*&order=created_at.desc');
+      setMitras(data);
+    } catch (error) {
+      console.error('Error fetching mitras:', error);
+      alert('Gagal memuat data mitra');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p>Memuat data mitra...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50">
+      {/* Header */}
+      <div className="bg-white shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" onClick={onBack} className="p-2">
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
+            <div>
+              <h1 className="text-2xl font-bold">Daftar Mitra Aktif</h1>
+              <p className="text-muted-foreground">
+                Total {mitras.length} mitra aktif
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-7xl mx-auto p-4">
+        {mitras.length === 0 ? (
+          <Card className="text-center py-12">
+            <CardContent>
+              <Users className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">Belum ada mitra</h3>
+              <p className="text-muted-foreground">
+                Belum ada mitra yang terdaftar dalam sistem.
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-4">
+            {mitras.map((mitra) => (
+              <Card key={mitra.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="w-5 h-5" />
+                    {mitra.nama}
+                  </CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Bergabung: {new Date(mitra.created_at).toLocaleDateString('id-ID')}
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-blue-600" />
+                        <span className="text-sm font-medium">Email:</span>
+                        <span className="text-sm">{mitra.email}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-4 h-4 text-green-600" />
+                        <span className="text-sm font-medium">HP:</span>
+                        <span className="text-sm">{mitra.nomor_hp}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">Layanan:</span>
+                        <span className="text-sm">{mitra.jenis_layanan}</span>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="w-4 h-4 text-purple-600" />
+                        <span className="text-sm font-medium">Saldo:</span>
+                        <span className="text-sm font-bold text-green-600">
+                          Rp {mitra.saldo?.toLocaleString('id-ID') || '0'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">Status:</span>
+                        <Badge variant="secondary">{mitra.status}</Badge>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">Blokir:</span>
+                        <Badge variant={mitra.blokir ? 'destructive' : 'default'}>
+                          {mitra.blokir ? 'Ya' : 'Tidak'}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default DaftarMitra;
