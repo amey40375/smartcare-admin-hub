@@ -1,11 +1,32 @@
-
 export interface Admin {
   email: string;
   password: string;
   createdAt: string;
 }
 
+// Default admin account
+const DEFAULT_ADMIN: Admin = {
+  email: 'smartcare@gmail.com',
+  password: 'Bandung123',
+  createdAt: new Date().toISOString()
+};
+
 export const adminAuth = {
+  // Initialize default admin if not exists
+  initializeDefaultAdmin: (): void => {
+    const existingAdmins = adminAuth.getAllAdmins();
+    if (existingAdmins.length === 0) {
+      localStorage.setItem('admins', JSON.stringify([DEFAULT_ADMIN]));
+    } else {
+      // Check if default admin exists, if not add it
+      const defaultExists = existingAdmins.some(admin => admin.email === DEFAULT_ADMIN.email);
+      if (!defaultExists) {
+        existingAdmins.push(DEFAULT_ADMIN);
+        localStorage.setItem('admins', JSON.stringify(existingAdmins));
+      }
+    }
+  },
+
   // Register admin baru
   register: (email: string, password: string): boolean => {
     try {
@@ -34,6 +55,9 @@ export const adminAuth = {
   // Login admin
   login: (email: string, password: string): boolean => {
     try {
+      // Initialize default admin on first login attempt
+      adminAuth.initializeDefaultAdmin();
+      
       const admins = adminAuth.getAllAdmins();
       const admin = admins.find(a => a.email === email && a.password === password);
       

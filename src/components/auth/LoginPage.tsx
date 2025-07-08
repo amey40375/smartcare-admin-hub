@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
@@ -77,7 +76,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-input bg-white/80 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300 placeholder:text-muted-foreground"
-                  placeholder="admin@smartcare.com"
+                  placeholder="smartcare@gmail.com"
                   required
                 />
               </div>
@@ -142,8 +141,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
               Demo Credentials
             </h4>
             <div className="space-y-1 text-sm text-blue-700">
-              <p><span className="font-medium">Email:</span> admin@smartcare.com</p>
-              <p><span className="font-medium">Password:</span> admin123</p>
+              <p><span className="font-medium">Email:</span> smartcare@gmail.com</p>
+              <p><span className="font-medium">Password:</span> Bandung123</p>
             </div>
           </div>
 
